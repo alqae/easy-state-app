@@ -24,6 +24,10 @@ jobs:
           id
           groups
           env | sort
+      - name: Check secret length
+        run: echo "Password length: ${#DB_PASS}"
+        env:
+          DB_PASS: ${{ secrets.DB_PASS }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build and deploy
