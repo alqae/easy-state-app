@@ -17,10 +17,12 @@ jobs:
       DB_NAME: ${{ vars.DB_NAME }}
       DB_PORT: ${{ vars.DB_PORT }}
     steps:
-      - name: Who am I?
+      - name: Print env
         run: |
           whoami
           id
+          groups
+          env | sort
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build and deploy
