@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mongo:6.0
+    container_name: easy-state-db
+    restart: always
+    ports:
+      - "${DB_PORT}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    volumes:
+      - db_data:/data/db
+    networks:
+      - easy_state_proxy
+
+  mongo_express:
+    image: mongo-express:1.0.2-20
+    container_name: easy-state-mongo-express
+    restart: always
+    depends_on:
+      - db
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    networks:
+      - easy_state_proxy
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        API_URL: ${API_URL}
+    image: easy-state-api
+    container_name: easy-state-api
+    networks:
+      - easy_state_proxy
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: easy-state-web
+    container_name: easy-state-web
+    depends_on:
+      - api
+    networks:
+      - easy_state_proxy
+
+volumes:
+  db_data:
+
+networks:
+  easy_state_proxy:
+    driver: bridge
