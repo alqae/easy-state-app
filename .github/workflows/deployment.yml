@@ -3,7 +3,7 @@ name: "Deploy to Ionos"
 on:
   push:
     branches:
-      - master
+      - development
 
 jobs:
   deploy:
