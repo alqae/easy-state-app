@@ -1,4 +1,21 @@
 services:
+  proxy:
+    image: nginx:alpine
+    container_name: easy-state-proxy
+    ports:
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy/ssl.conf:/etc/nginx/ssl.conf
+      - ./proxy/conf.d:/etc/nginx/conf.d
+    networks:
+      - easy_state_proxy
+    mem_limit: 128m
+    cpus: 0.25
+
   db:
     image: mongo:6.0
     container_name: easy-state-db
@@ -13,6 +30,8 @@ services:
       - db_data:/data/db
     networks:
       - easy_state_proxy
+    mem_limit: 128m
+    cpus: 0.25
 
   mongo_express:
     image: mongo-express:1.0.2-20
@@ -26,6 +45,8 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: admin123
     networks:
       - easy_state_proxy
+    mem_limit: 128m
+    cpus: 0.25
 
   api:
     build:
@@ -39,6 +60,10 @@ services:
       - easy_state_proxy
     depends_on:
       - db
+    # command: >
+    #   sh -c "yarn run migration:run && yarn start"
+    mem_limit: 512m
+    cpus: 0.75
 
   web:
     build:
@@ -50,6 +75,8 @@ services:
       - api
     networks:
       - easy_state_proxy
+    mem_limit: 256m
+    cpus: 0.50
 
 volumes:
   db_data:
