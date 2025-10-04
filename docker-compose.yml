@@ -40,10 +40,8 @@ services:
     restart: always
     depends_on:
       - db
-    ports:
-      - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin"
+      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/admin?authSource=admin"
     networks:
       - easy_state_proxy
     mem_limit: 128m
