@@ -28,6 +28,7 @@ services:
       MONGO_INITDB_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - easy_state_proxy
     mem_limit: 128m
@@ -39,10 +40,10 @@ services:
     restart: always
     depends_on:
       - db
+    ports:
+      - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin"
     networks:
       - easy_state_proxy
     mem_limit: 128m
