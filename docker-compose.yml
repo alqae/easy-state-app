@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
     environment:
-      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/admin?authSource=admin"
+      ME_CONFIG_MONGODB_URL: "mongodb://${DB_USER}:${DB_PASS}@localhost:${DB_PORT}/admin?authSource=admin"
     networks:
       - easy_state_proxy
     mem_limit: 128m
